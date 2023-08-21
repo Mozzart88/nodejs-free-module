@@ -4,16 +4,17 @@
 import {test} from 'node:test'
 import assert from 'node:assert'
 import { createRequire } from 'node:module'
+import path from 'node:path'
 
 const require = createRequire(import.meta.url)
 
-function clearModule(id: string) {
+function clearModule(id: string, src: string) {
   const module = require.cache[require.resolve(id)]
-  const root = '/Users/Tom/nodejs-free-module/src'
+  const root = path.parse(path.resolve(src)).dir
   if (module && 'children' in module && module.children.length > 0) {
     for (const child of module.children) {
       if (child.loaded && child.path.includes(root))
-        clearModule(child.filename)
+        clearModule(child.filename, src)
     }
   }
   delete require.cache[require.resolve(id)]
@@ -33,7 +34,7 @@ await test('Mock env var', async (t) => {
   await t.test('Should be equal to some', () => {
     const val = app.val
     assert.strictEqual(val, process.env.VAL, 'No good')
-    clearModule(mod)
+    clearModule(mod, './src')
     })
 })
 await test('Mock env var', async (t) => {

@@ -6,16 +6,15 @@ You need to copy lines 8-26 to your script -
 ```typescript
 const require = createRequire(import.meta.url)
 
-function clearModule(id: string) {
+function clearModule(id: string, src: string) {
   const module = require.cache[require.resolve(id)]
-  const root = ''
+  const root = path.parse(path.resolve(src)).dir
   if (module && 'children' in module && module.children.length > 0) {
     for (const child of module.children) {
       if (child.loaded && child.path.includes(root))
-        clearModule(child.filename)
+        clearModule(child.filename, src)
     }
   }
-  console.debug(require.cache[require.resolve(id)])
   delete require.cache[require.resolve(id)]
 }
 
@@ -24,11 +23,6 @@ function requireModule (id: string) {
   return require(id)
 }
 
-```
-
-Replace `root` value in clearModule with actual absolute path to your `src` dirrectory
-```typescript
-const root = '/Users/Tom/nodejs-free-module/src'
 ```
 
 Run tests
