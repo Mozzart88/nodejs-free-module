@@ -1,5 +1,5 @@
 # Dynamic import module
-Dynamicly imports modules.
+Dynamically imports modules.
 
 
 ## Usage
